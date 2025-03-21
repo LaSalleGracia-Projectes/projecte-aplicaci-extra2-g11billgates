@@ -9,7 +9,15 @@ export default function Header() {
             TeamUp - Panel de Administración
             </h1>
         <div className= "flex items-center gap-4">
-            
+            <nav>
+                <ul className="flex flex-wrap gap-4">
+                    <NavItem href="/admin/usuarios" label="Gestión de Usuarios" />
+                    <NavItem href="/admin/contenido" label="Contenido App" />
+                    <NavItem href="/admin/reportes" label="Reportes" />
+                    <NavItem href="/admin/preguntas" label="Preguntas" />
+                    <NavItem href="/admin/enlaces" label="Enlaces de Descarga" />
+                </ul>
+            </nav>
         </div>
         </header>
     )
