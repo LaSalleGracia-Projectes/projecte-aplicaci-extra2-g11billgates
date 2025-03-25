@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Header from "@/app/components/Header";
-import StatCard from  "@/app/components/dashboard/StatCard"
+import StatCard from  "@/app/components/StatCard"
 
 export default function Dashboard() {
     const [reports, setReports] = useState(0);
