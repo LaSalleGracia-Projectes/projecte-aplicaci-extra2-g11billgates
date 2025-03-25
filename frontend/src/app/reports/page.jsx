@@ -17,9 +17,9 @@ export default function Reports() {
                  <h2 className="text-2xl font-semibold mb-6">Reportes y Métricas</h2>
  
                  <div className="text-white grid grid-cols-1 md:grid-cols-3 gap-8">
-                     <StatCard title="Nuevos Registros" value={reports} />
-                     <StatCard title="Usuarios Totales" value={unansweredQuestions} />
-                     <StatCard title="Matches" value={activeUsers} />
+                     <StatCard title="Nuevos Registros" value={registers} />
+                     <StatCard title="Usuarios Totales" value={totalUsers} />
+                     <StatCard title="Matches" value={matches} />
                  </div>
              </main>
          </div>
