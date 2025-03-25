@@ -11,6 +11,10 @@ export default function Dashboard() {
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
             <Header/>
+
+            <main className="p-6 mt-20">
+            <h2 className="text-2xl font-semibold mb-6">Bienvenido al Panel Administrativo</h2>
+            </main>
         </div>
     );
 }
