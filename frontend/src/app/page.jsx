@@ -9,4 +9,8 @@ export default function Login () {
   const [rememberMe,setRememberMe] = useState("");
   const router = useRouter();
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Iniciar sesión con:", email, password);
+  }
 }
