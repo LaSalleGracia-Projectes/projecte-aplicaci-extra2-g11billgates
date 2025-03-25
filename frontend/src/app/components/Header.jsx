@@ -8,17 +8,20 @@ export default function Header() {
             <h1 className="text-3xl font-extrabold text-white">
             TeamUp - Panel de Administración
             </h1>
-        <div className= "flex items-center gap-4">
-            <nav>
-                <ul className="flex flex-wrap gap-4">
-                    <NavItem href="/admin/usuarios" label="Gestión de Usuarios" />
-                    <NavItem href="/admin/contenido" label="Contenido App" />
-                    <NavItem href="/admin/reportes" label="Reportes" />
-                    <NavItem href="/admin/preguntas" label="Preguntas" />
-                    <NavItem href="/admin/enlaces" label="Enlaces de Descarga" />
-                </ul>
-            </nav>
-        </div>
+            <div className= "flex items-center gap-4">
+                <nav>
+                    <ul className="flex flex-wrap gap-4">
+                        <NavItem href="/admin/usuarios" label="Gestión de Usuarios" />
+                        <NavItem href="/admin/contenido" label="Contenido App" />
+                        <NavItem href="/admin/reportes" label="Reportes" />
+                        <NavItem href="/admin/preguntas" label="Preguntas" />
+                        <NavItem href="/admin/enlaces" label="Enlaces de Descarga" />
+                    </ul>
+                </nav>
+                <button className="bg-red-600 px-4 py-2 rounded-full hover:bg-red-700 transition text-white font-semibold">
+                    Cerrar Sesión
+                </button>
+            </div>
         </header>
     )
 }
