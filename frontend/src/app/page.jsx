@@ -13,12 +13,24 @@ export default function Login () {
     e.preventDefault();
     console.log("Iniciar sesión con:", email, password);
 
-    if(rememberMe) {
-      localStorage.setItem("email",email);
-      localStorage.setItem("passwoed",passwoed);
-    }else {
-      localStorage.removeItem("email",email);
-      localStorage.removetem("passwoed",passwoed);
-    }
-  }
+      if(rememberMe) {
+        localStorage.setItem("email",email);
+        localStorage.setItem("passwoed",passwoed);
+      }else {
+        localStorage.removeItem("email",email);
+        localStorage.removetem("passwoed",passwoed);
+      }
+      router.push("/dashboard");
+   };
+
+    useEffect(() => {
+      const savedEmail = localStorage.getItem("email");
+      const savedPassword = localStorage.getItem("password");
+
+      if (savedEmail && savedPassword) {
+        setEmail(savedEmail);
+        setPassword(savedPassword);
+        setRememberMe(true);
+      }
+    },[]);
 }
