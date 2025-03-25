@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "react";
+import NavItem from "../components/NavItem";
 
 export default function Header() {
     return (
@@ -23,5 +23,5 @@ export default function Header() {
                 </button>
             </div>
         </header>
-    )
+    );
 }
