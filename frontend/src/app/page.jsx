@@ -12,5 +12,13 @@ export default function Login () {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Iniciar sesión con:", email, password);
+
+    if(rememberMe) {
+      localStorage.setItem("email",email);
+      localStorage.setItem("passwoed",passwoed);
+    }else {
+      localStorage.removeItem("email",email);
+      localStorage.removetem("passwoed",passwoed);
+    }
   }
 }
