@@ -45,6 +45,35 @@ export default function UserManagementPage() {
         setEditingUserId(user.id);
         setEditForm({ username: user.username, password: "" });
     };
+    const handleSave = (userId) => {
+        Swal.fire({
+            title: "¿Guardar los cambios?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Guardar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`http://localhost:8000/api/users/${userId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(editForm),
+                })
+                    .then((res) => res.json())
+                    .then((updatedUser) => {
+                        setUsers((prev) =>
+                            prev.map((u) => (u.id === userId ? updatedUser : u))
+                        );
+                        setEditingUserId(null);
+                        setEditForm({ username: "", password: "" });
+    
+                        Swal.fire("Actualizado", "El usuario fue actualizado.", "success");
+                    });
+            }
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
@@ -70,21 +99,41 @@ export default function UserManagementPage() {
                             <td className="p-2">{user.password}</td>
                             <td className="p-2">{user.status}</td>
                             <td className="p-2">
-                            <div className="flex flex-col gap-2 items-start">
-                                <button
-                                    onClick={() => handleEdit(user)}
-                                    className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                                >
-                                    Editar
-                                </button>
-                                <button
-                                    onClick={() => handleDelete(user.id, user.username)}
-                                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                                >
-                                    Eliminar
-                                </button>
-                            </div>
-                            </td>
+                                    {editingUserId === user.id ? (
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleSave(user.id)}
+                                                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                                            >
+                                                Guardar
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setEditingUserId(null);
+                                                    setEditForm({ username: "", password: "" });
+                                                }}
+                                                className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500"
+                                            >
+                                                Cancelar
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col gap-2 items-start">
+                                            <button
+                                                onClick={() => handleEdit(user)}
+                                                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                                            >
+                                                Editar
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(user.id, user.username)}
+                                                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                                            >
+                                                Eliminar
+                                            </button>
+                                        </div>
+                                    )}
+                                </td>
                         </tr>
                     ))}
                 </tbody>
