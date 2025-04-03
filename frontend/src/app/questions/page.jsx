@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Swal from "sweetalert2";
 import Header from "@/app/components/Header";
 
 export default function UserQuestionsPage() {
@@ -51,10 +52,45 @@ export default function UserQuestionsPage() {
                                 >
                                     Responder
                                 </button>
-                                <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+                                <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                onClick={() => {
+                                    Swal.fire({
+                                        title: `¿Estás seguro?`,
+                                        text: `Esto eliminará la pregunta de ${q.username}.`,
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#d33",
+                                        cancelButtonColor: "#3085d6",
+                                        confirmButtonText: "Sí, borrar",
+                                        cancelButtonText: "Cancelar",
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            setQuestions(questions.filter(item => item.id !== q.id));
+                                            Swal.fire("¡Eliminado!", "La pregunta fue eliminada.", "success");
+                                        }
+                                    });
+                                }}                                
+                                >
                                     Borrar
                                 </button>
-                                <button className="bg-black text-white px-3 py-1 rounded hover:bg-gray-800">
+                                <button className="bg-black text-white px-3 py-1 rounded hover:bg-gray-800"
+                                onClick={() => {
+                                    Swal.fire({
+                                        title: `¿Banear a ${q.username}?`,
+                                        text: "Esta acción no se puede deshacer.",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#000",
+                                        cancelButtonColor: "#3085d6",
+                                        confirmButtonText: "Sí, banear",
+                                        cancelButtonText: "Cancelar",
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            Swal.fire("Usuario Baneado", `${q.username} ha sido baneado.`, "success");
+                                        }
+                                    });
+                                }}
+                                >
                                     Banear
                                 </button>
                             </td>
