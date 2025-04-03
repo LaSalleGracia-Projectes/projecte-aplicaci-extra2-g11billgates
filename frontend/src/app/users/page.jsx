@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/app/components/Header";
 
 export default function UserManagementPage() {
@@ -12,6 +12,13 @@ export default function UserManagementPage() {
             status: "Activo",
         },
     ]);
+    
+    useEffect(() => {
+        fetch("http://localhost:8000/api/users")
+            .then((res) => res.json())
+            .then((data) => setUsers(data))
+            .catch((err) => console.error("Error al cargar usuarios:", err));
+    }, []);
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
