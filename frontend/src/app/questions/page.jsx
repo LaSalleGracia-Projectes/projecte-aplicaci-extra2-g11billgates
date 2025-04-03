@@ -128,12 +128,25 @@ export default function UserQuestionsPage() {
                         rows="5"
                     />
 
-                    <button
-                        onClick={handleSendResponse}
-                        className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
-                    >
-                        Enviar Respuesta
-                    </button>
+                    <div className="flex space-x-4">
+                        <button
+                            onClick={handleSendResponse}
+                            className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
+                        >
+                            Enviar Respuesta
+                        </button>
+
+                        <button
+                            onClick={() => {
+                                setActiveQuestion(null);
+                                setResponse("");
+                            }}
+                            className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
+                        >
+                            Cancelar
+                        </button>
+                    </div>
+
                 </div>
             )}
             </main>
