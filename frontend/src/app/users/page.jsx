@@ -38,6 +38,13 @@ export default function UserManagementPage() {
             }
         });
     };
+    const [editingUserId, setEditingUserId] = useState(null);
+    const [editForm, setEditForm] = useState({ username: "", password: "" });
+
+    const handleEdit = (user) => {
+        setEditingUserId(user.id);
+        setEditForm({ username: user.username, password: "" });
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
@@ -63,12 +70,20 @@ export default function UserManagementPage() {
                             <td className="p-2">{user.password}</td>
                             <td className="p-2">{user.status}</td>
                             <td className="p-2">
-                            <button
-                                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                                onClick={() => handleDelete(user.id, user.username)}
-                            >
-                                Eliminar
-                            </button>    
+                            <div className="flex flex-col gap-2 items-start">
+                                <button
+                                    onClick={() => handleEdit(user)}
+                                    className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                                >
+                                    Editar
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(user.id, user.username)}
+                                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                                >
+                                    Eliminar
+                                </button>
+                            </div>
                             </td>
                         </tr>
                     ))}
