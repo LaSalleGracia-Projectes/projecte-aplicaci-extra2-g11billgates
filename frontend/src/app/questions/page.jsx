@@ -4,7 +4,6 @@ import { useState } from "react";
 import Header from "@/app/components/Header";
 
 export default function UserQuestionsPage() {
-
     const [questions, setQuestions] = useState([
         {
             id: 1,
@@ -17,6 +16,8 @@ export default function UserQuestionsPage() {
             question: "¿Cómo cambio mi usuario?",
         },
     ]);
+    const [activeQuestion, setActiveQuestion] = useState(null);
+    const [response, setResponse] = useState("");
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
@@ -45,7 +46,9 @@ export default function UserQuestionsPage() {
                             <td className="p-2">{q.username}</td>
                             <td className="p-2">{q.question}</td>
                             <td className="p-2 flex flex-col gap-2 items-start">
-                                <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">
+                                <button className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                                onClick={() => setActiveQuestion(q)}
+                                >
                                     Responder
                                 </button>
                                 <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
@@ -59,6 +62,36 @@ export default function UserQuestionsPage() {
                     ))}
                 </tbody>
             </table>
+            {activeQuestion && (
+                <div className="bg-white border rounded p-6 shadow mt-10 max-w-2xl">
+                    <h3 className="text-xl font-semibold mb-4">Responder Pregunta:</h3>
+                    <p className="mb-2">
+                        <strong>Usuario:</strong> {activeQuestion.username}
+                    </p>
+                    <p className="mb-4">
+                        <strong>Pregunta:</strong> {activeQuestion.question}
+                    </p>
+
+                    <label className="block font-medium mb-2">Respuesta:</label>
+                    <textarea
+                        value={response}
+                        onChange={(e) => setResponse(e.target.value)}
+                        className="w-full border p-2 rounded mb-4"
+                        rows="5"
+                    />
+
+                    <button
+                        onClick={() => {
+                            alert(`Respuesta enviada a ${activeQuestion.username}: ${response}`);
+                            setActiveQuestion(null);
+                            setResponse("");
+                        }}
+                        className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
+                    >
+                        Enviar Respuesta
+                    </button>
+                </div>
+            )}
             </main>
         </div>
     );
