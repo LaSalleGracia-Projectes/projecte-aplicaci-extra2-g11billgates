@@ -20,6 +20,18 @@ export default function UserQuestionsPage() {
     const [activeQuestion, setActiveQuestion] = useState(null);
     const [response, setResponse] = useState("");
 
+    const handleSendResponse = () => {
+        if (!activeQuestion) return;
+    
+        Swal.fire(
+            "Respuesta Enviada",
+            `Tu respuesta a ${activeQuestion.username} ha sido registrada.`,
+            "success"
+        );
+    
+        setActiveQuestion(null);
+        setResponse("");
+    };    
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
             <Header />
@@ -117,11 +129,7 @@ export default function UserQuestionsPage() {
                     />
 
                     <button
-                        onClick={() => {
-                            alert(`Respuesta enviada a ${activeQuestion.username}: ${response}`);
-                            setActiveQuestion(null);
-                            setResponse("");
-                        }}
+                        onClick={handleSendResponse}
                         className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
                     >
                         Enviar Respuesta
