@@ -12,11 +12,12 @@ export default function Header() {
             <div className= "flex items-center gap-4">
                 <nav>
                     <ul className="flex flex-wrap gap-4">
-                        <NavItem href="/admin/usuarios" label="Gestión de Usuarios" />
-                        <NavItem href="/admin/contenido" label="Contenido App" />
-                        <NavItem href="/admin/reportes" label="Reportes" />
-                        <NavItem href="/admin/preguntas" label="Preguntas" />
-                        <NavItem href="/admin/enlaces" label="Enlaces de Descarga" />
+                        <NavItem href="/dashboard" label="Dashboard"></NavItem>
+                        <NavItem href="/users" label="Gestión de Usuarios" />
+                        <NavItem href="/contentManagment" label="Contenido App" />
+                        <NavItem href="/reports" label="Reportes" />
+                        <NavItem href="/questions" label="Preguntas" />
+                        <NavItem href="/downloadLinks" label="Enlaces de Descarga" />
                     </ul>
                 </nav>
                 <button className="bg-red-600 px-4 py-2 rounded-full hover:bg-red-700 transition text-white font-semibold">
