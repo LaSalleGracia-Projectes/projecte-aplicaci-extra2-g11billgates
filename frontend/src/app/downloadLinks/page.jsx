@@ -4,6 +4,7 @@ import { useState } from "react";
 import Header from "@/app/components/Header";
 
 export default function DownloadLinks() {
+
     const [links, setLinks] = useState([
         {
             id: 1,
@@ -18,6 +19,19 @@ export default function DownloadLinks() {
             description: "Historial de actualizaciones",
         },
     ]);
+
+    const [newLink, setNewLink] = useState({
+        url: "",
+        description: "",
+        type: "descarga",
+    });
+
+    const handleAddLink = () => {
+        const newId = links.length + 1;
+        setLinks([...links, { ...newLink, id: newId }]);
+        setNewLink({ url: "", description: "", type: "descarga" });
+    };
+    
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
             <Header />
@@ -51,6 +65,49 @@ export default function DownloadLinks() {
                             ))}
                         </tbody>
                     </table>
+                </section>
+
+                <section>
+                    <h3 className="text-xl font-semibold mb-4">Agregar Nuevo Enlace</h3>
+
+                    <div className="mb-4">
+                        <label className="block mb-1 font-medium">Tipo de Enlace:</label>
+                        <select
+                            value={newLink.type}
+                            onChange={(e) => setNewLink({ ...newLink, type: e.target.value })}
+                            className="w-full border p-2 rounded"
+                        >
+                            <option value="descarga">Descarga</option>
+                            <option value="actualizacion">Actualización</option>
+                        </select>
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block mb-1 font-medium">URL del Enlace:</label>
+                        <input
+                            type="text"
+                            value={newLink.url}
+                            onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
+                            className="w-full border p-2 rounded"
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block mb-1 font-medium">Descripción:</label>
+                        <textarea
+                            value={newLink.description}
+                            onChange={(e) => setNewLink({ ...newLink, description: e.target.value })}
+                            className="w-full border p-2 rounded"
+                            rows="4"
+                        />
+                    </div>
+
+                    <button
+                        onClick={handleAddLink}
+                        className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+                    >
+                        Agregar Enlace
+                    </button>
                 </section>
             </main>
         </div>
