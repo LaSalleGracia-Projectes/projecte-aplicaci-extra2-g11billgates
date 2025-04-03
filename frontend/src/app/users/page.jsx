@@ -12,13 +12,32 @@ export default function UserManagementPage() {
             status: "Activo",
         },
     ]);
-    
+
     useEffect(() => {
         fetch("http://localhost:8000/api/users")
             .then((res) => res.json())
             .then((data) => setUsers(data))
             .catch((err) => console.error("Error al cargar usuarios:", err));
     }, []);
+
+    const handleDelete = (id, username) => {
+        Swal.fire({
+            title: `¿Eliminar a ${username}?`,
+            text: "Esta acción no se puede deshacer.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, eliminar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`http://localhost:8000/api/users/${id}`, { method: "DELETE" }).then(() => {
+                    setUsers((prev) => prev.filter((u) => u.id !== id));
+                    Swal.fire("Eliminado", `${username} fue eliminado.`, "success");
+                });
+            }
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
@@ -43,7 +62,14 @@ export default function UserManagementPage() {
                             <td className="p-2">{user.username}</td>
                             <td className="p-2">{user.password}</td>
                             <td className="p-2">{user.status}</td>
-                            <td className="p-2">[botones]</td>
+                            <td className="p-2">
+                            <button
+                                className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                                onClick={() => handleDelete(user.id, user.username)}
+                            >
+                                Eliminar
+                            </button>    
+                            </td>
                         </tr>
                     ))}
                 </tbody>
