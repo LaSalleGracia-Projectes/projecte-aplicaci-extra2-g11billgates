@@ -22,8 +22,8 @@ class EmailsController extends Controller
                 $emails[] = [
                     'id' => $message->getUid(),
                     'username' => $message->getFrom()[0]->mail,
-                    'question' => $message->getSubject(),
-                    'date' => $message->getDate(),
+                    'question' => $message->getSubject()->get(),
+                    'date' => $message->getDate()->get()->format('Y-m-d H:i:s'),
                 ];
             }
 
