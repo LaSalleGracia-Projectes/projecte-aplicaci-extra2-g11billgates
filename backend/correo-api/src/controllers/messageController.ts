@@ -95,3 +95,12 @@ export const getEmails = async (req: Request, res: Response) => {
     });
   }
 };
+export const getAllMessages = async (req: Request, res: Response) => {
+  try {
+    const messages = await MessageModel.find().sort({ date: -1 });
+    res.json(messages);
+  } catch (error) {
+    console.error('❌ Error al obtener los mensajes:', error);
+    res.status(500).json({ error: 'Error al recuperar los mensajes guardados' });
+  }
+};
