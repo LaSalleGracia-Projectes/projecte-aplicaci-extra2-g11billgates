@@ -104,3 +104,17 @@ export const getAllMessages = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Error al recuperar los mensajes guardados' });
   }
 };
+
+export const deleteMessage = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const deleted = await MessageModel.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ error: "Mensaje no encontrado" });
+    }
+    res.json({ deleted: true });
+  } catch (error) {
+    console.error("❌ Error al eliminar mensaje:", error);
+    res.status(500).json({ error: "Error al eliminar el mensaje" });
+  }
+};
