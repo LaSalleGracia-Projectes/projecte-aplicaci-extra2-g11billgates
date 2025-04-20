@@ -62,15 +62,24 @@ export default function UserQuestionsPage() {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        setQuestions((prev) =>
-          prev.filter((q) => q._id !== questionToDelete._id)
-        );
-        loadedIdsRef.current.delete(questionToDelete._id);
-        Swal.fire("¡Eliminado!", "La pregunta fue eliminada.", "success");
+        fetch(`http://localhost:3001/api/emails/${questionToDelete._id}`, {
+          method: "DELETE",
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("No se pudo eliminar");
+            setQuestions((prev) =>
+              prev.filter((q) => q._id !== questionToDelete._id)
+            );
+            loadedIdsRef.current.delete(questionToDelete._id);
+            Swal.fire("¡Eliminado!", "La pregunta fue eliminada.", "success");
+          })
+          .catch(() => {
+            Swal.fire("Error", "No se pudo eliminar el mensaje", "error");
+          });
       }
     });
   };
-
+  
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
       <Header />

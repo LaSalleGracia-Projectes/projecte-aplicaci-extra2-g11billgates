@@ -22,27 +22,6 @@ const QuestionRow = React.memo(function QuestionRow({ q, index, onRespond, onDel
                 >
                     Borrar
                 </button>
-                <button
-                    className="bg-black text-white px-3 py-1 rounded hover:bg-gray-800"
-                    onClick={() => {
-                        Swal.fire({
-                            title: `¿Banear a ${q.username}?`,
-                            text: "Esta acción no se puede deshacer.",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#000",
-                            cancelButtonColor: "#3085d6",
-                            confirmButtonText: "Sí, banear",
-                            cancelButtonText: "Cancelar",
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                Swal.fire("Usuario Baneado", `${q.username} ha sido baneado.`, "success");
-                            }
-                        });
-                    }}
-                >
-                    Banear
-                </button>
             </td>
         </tr>
     );
