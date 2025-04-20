@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Imap from 'node-imap';
 import { simpleParser, ParsedMail } from 'mailparser';
+import { Readable } from 'stream';
 import MessageModel from '../models/message.model';
 import { config } from '../config/env.config';
 
@@ -27,7 +28,7 @@ const connectImap = async (retryCount = 0): Promise<Imap> => {
   }
 };
 
-export const getEmails = async (req: Request, res: Response) => {
+export const getEmails = async (req: Request, res: Response): Promise<void> => {
   try {
     const imap = await connectImap();
     const messages: {
@@ -95,7 +96,8 @@ export const getEmails = async (req: Request, res: Response) => {
     });
   }
 };
-export const getAllMessages = async (req: Request, res: Response) => {
+
+export const getAllMessages = async (req: Request, res: Response): Promise<void> => {
   try {
     const messages = await MessageModel.find().sort({ date: -1 });
     res.json(messages);
@@ -105,12 +107,13 @@ export const getAllMessages = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteMessage = async (req: Request, res: Response) => {
+export const deleteMessage = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
     const deleted = await MessageModel.findByIdAndDelete(id);
     if (!deleted) {
-      return res.status(404).json({ error: "Mensaje no encontrado" });
+      res.status(404).json({ error: "Mensaje no encontrado" });
+      return;
     }
     res.json({ deleted: true });
   } catch (error) {

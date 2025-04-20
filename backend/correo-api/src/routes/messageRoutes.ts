@@ -1,9 +1,10 @@
-import express from 'express';
-import { getEmails, getAllMessages  } from '../controllers/messageController';
+import { Router, RequestHandler } from 'express';
+import * as messageController from '../controllers/messageController';
 
-const router = express.Router();
+const router = Router();
 
-router.get('/new', getEmails);
-router.get('/all', getAllMessages); 
+router.get('/new', messageController.getEmails as RequestHandler);
+router.get('/all', messageController.getAllMessages as RequestHandler);
+router.delete('/:id', messageController.deleteMessage as RequestHandler);
 
 export default router;
