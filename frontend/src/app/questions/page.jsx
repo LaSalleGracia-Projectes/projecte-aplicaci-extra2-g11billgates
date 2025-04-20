@@ -37,18 +37,40 @@ export default function UserQuestionsPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSendResponse = () => {
-    if (!activeQuestion) return;
-
-    Swal.fire(
-      "Respuesta Enviada",
-      `Tu respuesta a ${activeQuestion.username} ha sido registrada.`,
-      "success"
-    );
-
-    setActiveQuestion(null);
-    setResponse("");
-  };
+  const handleSendResponse = async () => {
+    if (!activeQuestion || !response) return;
+  
+    try {
+      const res = await fetch("http://localhost:3001/api/emails/respond", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: activeQuestion.username,
+          subject: `Respuesta a tu mensaje`,
+          text: response,
+        }),
+      });
+  
+      const data = await res.json();
+  
+      if (data.success) {
+        Swal.fire(
+          "Respuesta Enviada",
+          `Tu respuesta a ${activeQuestion.username} ha sido enviada.`,
+          "success"
+        );
+        setActiveQuestion(null);
+        setResponse("");
+      } else {
+        Swal.fire("Error", "No se pudo enviar el correo", "error");
+      }
+    } catch (error) {
+      console.error("Error al enviar correo:", error);
+      Swal.fire("Error", "No se pudo enviar la respuesta", "error");
+    }
+  };  
 
   const handleDelete = (questionToDelete) => {
     Swal.fire({
