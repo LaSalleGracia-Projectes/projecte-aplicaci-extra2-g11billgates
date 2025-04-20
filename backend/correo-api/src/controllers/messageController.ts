@@ -4,6 +4,7 @@ import { simpleParser, ParsedMail } from 'mailparser';
 import { Readable } from 'stream';
 import MessageModel from '../models/message.model';
 import { config } from '../config/env.config';
+import nodemailer from 'nodemailer';
 
 const MAX_RETRIES = 3;
 const RETRY_DELAY = 5000; // 5 segundos
@@ -119,5 +120,35 @@ export const deleteMessage = async (req: Request, res: Response): Promise<void> 
   } catch (error) {
     console.error("❌ Error al eliminar mensaje:", error);
     res.status(500).json({ error: "Error al eliminar el mensaje" });
+  }
+};
+
+export const respondToMessage = async (req: Request, res: Response) => {
+  const { to, subject, text } = req.body;
+
+  if (!to || !text) {
+    return res.status(400).json({ error: 'Faltan campos requeridos (to, text)' });
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: config.email.user,
+        pass: config.email.password,
+      },
+    });
+
+    await transporter.sendMail({
+      from: `"Satenik Support" <${config.email.user}>`,
+      to,
+      subject: subject || 'Respuesta a tu mensaje',
+      text,
+    });
+
+    res.json({ success: true, message: 'Correo enviado correctamente' });
+  } catch (error) {
+    console.error('❌ Error al enviar correo:', error);
+    res.status(500).json({ error: 'No se pudo enviar el correo' });
   }
 };
