@@ -20,19 +20,40 @@ export default function Login () {
     }
   },[]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Iniciar sesión con:", email, password);
-
-      if(rememberMe) {
-        localStorage.setItem("email",email);
-        localStorage.setItem("passwoed",passwoed);
-      }else {
-        localStorage.removeItem("email",email);
-        localStorage.removetem("passwoed",passwoed);
+  
+    try {
+      const res = await fetch("http://localhost:3002/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: email, password }),
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        if (rememberMe) {
+          localStorage.setItem("email", email);
+          localStorage.setItem("password", password);
+        } else {
+          localStorage.removeItem("email");
+          localStorage.removeItem("password");
+        }
+  
+        localStorage.setItem("token", data.token); 
+        router.push("/dashboard/usuarios");
+      } else {
+        alert(data.error || "Login incorrecto");
       }
-      router.push("/dashboard");
-   };
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      alert("Error en el servidor");
+    }
+  };
+  
    return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
