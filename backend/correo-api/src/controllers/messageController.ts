@@ -140,7 +140,7 @@ export const respondToMessage = async (req: Request, res: Response) => {
     });
 
     await transporter.sendMail({
-      from: `"Satenik Support" <${config.email.user}>`,
+      from: `"TeamUp Support" <${config.email.user}>`,
       to,
       subject: subject || 'Respuesta a tu mensaje',
       text,
