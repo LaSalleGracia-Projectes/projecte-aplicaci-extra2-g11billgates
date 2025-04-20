@@ -10,6 +10,7 @@ export default function UserManagementPage() {
             username: "Player123",
             password: "$2y$10$hash",
             status: "Activo",
+            role: "Usuario"
         },
     ]);
 
@@ -39,11 +40,11 @@ export default function UserManagementPage() {
         });
     };
     const [editingUserId, setEditingUserId] = useState(null);
-    const [editForm, setEditForm] = useState({ username: "", password: "" });
+    const [editForm, setEditForm] = useState({ username: "", password: "", role: "" });
 
     const handleEdit = (user) => {
         setEditingUserId(user.id);
-        setEditForm({ username: user.username, password: "" });
+        setEditForm({ username: user.username, password: "", role: user.role });
     };
     const handleSave = (userId) => {
         Swal.fire({
@@ -67,7 +68,7 @@ export default function UserManagementPage() {
                             prev.map((u) => (u.id === userId ? updatedUser : u))
                         );
                         setEditingUserId(null);
-                        setEditForm({ username: "", password: "" });
+                        setEditForm({ username: "", password: "", role: "" });
     
                         Swal.fire("Actualizado", "El usuario fue actualizado.", "success");
                     });
@@ -88,6 +89,7 @@ export default function UserManagementPage() {
                         <th className="p-2">Usuario</th>
                         <th className="p-2">Contraseña (hash)</th>
                         <th className="p-2">Estado</th>
+                        <th className="p-2">Rol</th>
                         <th className="p-2 w-64">Acciones</th>
                     </tr>
                 </thead>
@@ -98,24 +100,50 @@ export default function UserManagementPage() {
                             <td className="p-2">{user.username}</td>
                             <td className="p-2">{user.password}</td>
                             <td className="p-2">{user.status}</td>
+                            <td className="p-2">{user.role}</td>
                             <td className="p-2">
                                     {editingUserId === user.id ? (
-                                        <div className="flex gap-2">
-                                            <button
-                                                onClick={() => handleSave(user.id)}
-                                                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                                        <div className="flex flex-col gap-2">
+                                            <input
+                                                type="text"
+                                                value={editForm.username}
+                                                onChange={(e) => setEditForm({ ...editForm, username: e.target.value })}
+                                                className="border p-1 rounded"
+                                                placeholder="Usuario"
+                                            />
+                                            <input
+                                                type="password"
+                                                value={editForm.password}
+                                                onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
+                                                className="border p-1 rounded"
+                                                placeholder="Nueva contraseña (opcional)"
+                                            />
+                                            <select
+                                                value={editForm.role}
+                                                onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
+                                                className="border p-1 rounded"
                                             >
-                                                Guardar
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    setEditingUserId(null);
-                                                    setEditForm({ username: "", password: "" });
-                                                }}
-                                                className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500"
-                                            >
-                                                Cancelar
-                                            </button>
+                                                <option value="Usuario">Usuario</option>
+                                                <option value="Admin">Admin</option>
+                                                <option value="Moderador">Moderador</option>
+                                            </select>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => handleSave(user.id)}
+                                                    className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700"
+                                                >
+                                                    Guardar
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setEditingUserId(null);
+                                                        setEditForm({ username: "", password: "", role: "" });
+                                                    }}
+                                                    className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500"
+                                                >
+                                                    Cancelar
+                                                </button>
+                                            </div>
                                         </div>
                                     ) : (
                                         <div className="flex flex-col gap-2 items-start">

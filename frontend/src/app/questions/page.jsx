@@ -101,6 +101,42 @@ export default function UserQuestionsPage() {
       }
     });
   };
+
+  const showResponseModal = (question) => {
+    setActiveQuestion(question);
+    Swal.fire({
+      title: 'Responder Pregunta',
+      html: `
+        <div class="text-left">
+          <p class="mb-2"><strong>Usuario:</strong> ${question.username}</p>
+          <p class="mb-4"><strong>Pregunta:</strong> ${question.question}</p>
+          <label class="block font-medium mb-2">Respuesta:</label>
+          <textarea id="response-text" class="w-full border p-2 rounded mb-4" rows="5"></textarea>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Enviar Respuesta',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#16a34a',
+      cancelButtonColor: '#6b7280',
+      preConfirm: () => {
+        const responseText = document.getElementById('response-text').value;
+        if (!responseText) {
+          Swal.showValidationMessage('Por favor, escribe una respuesta');
+          return false;
+        }
+        setResponse(responseText);
+        return responseText;
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleSendResponse();
+      } else {
+        setActiveQuestion(null);
+        setResponse("");
+      }
+    });
+  };
   
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
@@ -128,47 +164,12 @@ export default function UserQuestionsPage() {
                 key={q._id || index}
                 q={q}
                 index={index}
-                onRespond={setActiveQuestion}
+                onRespond={showResponseModal}
                 onDelete={handleDelete}
               />
             ))}
           </tbody>
         </table>
-
-        {activeQuestion && (
-          <div className="bg-white border rounded p-6 shadow mt-10 max-w-2xl mx-auto">
-            <h3 className="text-xl font-semibold mb-4">Responder Pregunta:</h3>
-            <p className="mb-2"><strong>Usuario:</strong> {activeQuestion.username}</p>
-            <p className="mb-4"><strong>Pregunta:</strong> {activeQuestion.question}</p>
-
-            <label className="block font-medium mb-2">Respuesta:</label>
-            <textarea
-              value={response}
-              onChange={(e) => setResponse(e.target.value)}
-              className="w-full border p-2 rounded mb-4"
-              rows="5"
-            />
-
-            <div className="flex space-x-4">
-              <button
-                onClick={handleSendResponse}
-                className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
-              >
-                Enviar Respuesta
-              </button>
-
-              <button
-                onClick={() => {
-                  setActiveQuestion(null);
-                  setResponse("");
-                }}
-                className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
