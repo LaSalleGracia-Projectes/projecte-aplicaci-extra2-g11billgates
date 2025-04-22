@@ -28,3 +28,25 @@ export const getAllLinks = async (req: Request, res: Response) => {
     }
   };
   
+  export const updateLink = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { url, description, type } = req.body;
+  
+    try {
+      const updated = await LinkModel.findByIdAndUpdate(
+        id,
+        { url, description, type },
+        { new: true }
+      );
+  
+      if (!updated) {
+        return res.status(404).json({ error: 'Enlace no encontrado' });
+      }
+  
+      res.json(updated);
+    } catch (error) {
+      console.error('❌ Error al actualizar enlace:', error);
+      res.status(500).json({ error: 'No se pudo actualizar el enlace' });
+    }
+  };
+  
