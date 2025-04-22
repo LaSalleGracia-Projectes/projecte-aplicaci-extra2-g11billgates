@@ -27,7 +27,7 @@ export const getAllLinks = async (req: Request, res: Response) => {
       res.status(500).json({ error: 'No se pudo crear el enlace' });
     }
   };
-  
+
   export const updateLink = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { url, description, type } = req.body;
@@ -47,6 +47,21 @@ export const getAllLinks = async (req: Request, res: Response) => {
     } catch (error) {
       console.error('❌ Error al actualizar enlace:', error);
       res.status(500).json({ error: 'No se pudo actualizar el enlace' });
+    }
+  };
+  
+  export const deleteLink = async (req: Request, res: Response) => {
+    const { id } = req.params;
+  
+    try {
+      const deleted = await LinkModel.findByIdAndDelete(id);
+      if (!deleted) {
+        return res.status(404).json({ error: 'Enlace no encontrado' });
+      }
+  
+      res.json({ message: 'Enlace eliminado correctamente' });
+    } catch (error) {
+      res.status(500).json({ error: 'No se pudo eliminar el enlace' });
     }
   };
   
