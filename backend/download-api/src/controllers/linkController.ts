@@ -1,18 +1,17 @@
 import { Request, Response } from 'express';
 import LinkModel from '../models/link.model';
 
-
-export const getAllLinks = async (req: Request, res: Response) => {
+export const getAllLinks = async (req: Request, res: Response): Promise<Response> => {
     try {
       const links = await LinkModel.find().sort({ createdAt: -1 });
-      res.json(links);
+      return res.json(links);
     } catch (error) {
       console.error('❌ Error al obtener enlaces:', error);
-      res.status(500).json({ error: 'No se pudieron obtener los enlaces' });
+      return res.status(500).json({ error: 'No se pudieron obtener los enlaces' });
     }
-  };
+};
 
-  export const createLink = async (req: Request, res: Response) => {
+export const createLink = async (req: Request, res: Response): Promise<Response> => {
     const { url, description, type } = req.body;
   
     if (!url || !description || !type) {
@@ -21,14 +20,14 @@ export const getAllLinks = async (req: Request, res: Response) => {
   
     try {
       const newLink = await LinkModel.create({ url, description, type });
-      res.status(201).json(newLink);
+      return res.status(201).json(newLink);
     } catch (error) {
       console.error('❌ Error al crear enlace:', error);
-      res.status(500).json({ error: 'No se pudo crear el enlace' });
+      return res.status(500).json({ error: 'No se pudo crear el enlace' });
     }
-  };
+};
 
-  export const updateLink = async (req: Request, res: Response) => {
+export const updateLink = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const { url, description, type } = req.body;
   
@@ -43,14 +42,14 @@ export const getAllLinks = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Enlace no encontrado' });
       }
   
-      res.json(updated);
+      return res.json(updated);
     } catch (error) {
       console.error('❌ Error al actualizar enlace:', error);
-      res.status(500).json({ error: 'No se pudo actualizar el enlace' });
+      return res.status(500).json({ error: 'No se pudo actualizar el enlace' });
     }
-  };
+};
   
-  export const deleteLink = async (req: Request, res: Response) => {
+export const deleteLink = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
   
     try {
@@ -59,9 +58,9 @@ export const getAllLinks = async (req: Request, res: Response) => {
         return res.status(404).json({ error: 'Enlace no encontrado' });
       }
   
-      res.json({ message: 'Enlace eliminado correctamente' });
+      return res.json({ message: 'Enlace eliminado correctamente' });
     } catch (error) {
-      res.status(500).json({ error: 'No se pudo eliminar el enlace' });
+      return res.status(500).json({ error: 'No se pudo eliminar el enlace' });
     }
-  };
+};
   
