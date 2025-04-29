@@ -4,5 +4,7 @@ export interface IUser {
     password: string;
     role: 'Administrador' | 'Usuario';
     status: 'Activo' | 'Inactivo';
+    bloqueado?: boolean;
+    advertencias?: number;
   }
   
