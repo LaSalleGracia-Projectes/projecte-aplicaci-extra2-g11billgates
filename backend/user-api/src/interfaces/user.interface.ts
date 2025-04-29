@@ -6,5 +6,7 @@ export interface IUser {
     status: 'Activo' | 'Inactivo';
     bloqueado?: boolean;
     advertencias?: number;
+    warnings?: number;
+    banned?: boolean;
   }
   
