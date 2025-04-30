@@ -6,6 +6,8 @@ const UserSchema: Schema = new Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ['Administrador', 'Usuario'], default: 'Usuario' },
   status: { type: String, enum: ['Activo', 'Inactivo'], default: 'Activo' },
+  warnings: { type: Number, default: 0 },
+  banned: { type: Boolean, default: false }
 });
 
 export default mongoose.model<IUser & Document>('User', UserSchema);
