@@ -15,7 +15,6 @@ export default function Header() {
                         <NavItem href="/dashboard" label="Dashboard"></NavItem>
                         <NavItem href="/users" label="Gestión de Usuarios" />
                         <NavItem href="/contentManagment" label="Contenido App" />
-                        <NavItem href="/reports" label="Reportes" />
                         <NavItem href="/questions" label="Preguntas" />
                         <NavItem href="/downloadLinks" label="Enlaces de Descarga" />
                     </ul>
