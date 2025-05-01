@@ -1,16 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import { connectDB } from './config/db';
 import messageRoutes from './routes/messageRoutes';
 import { config } from './config/env.config';
-
-connectDB();
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-
 
 app.use('/api/emails', messageRoutes);
 

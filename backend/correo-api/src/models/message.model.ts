@@ -1,11 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
-import { IMessage } from '../interfaces/message.interface';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
+export default prisma.message;
 
-const MessageSchema: Schema = new Schema({
-  username: { type: String, required: true },
-  question: { type: String, required: true },
-  date: { type: Date, default: Date.now },
-  messageId: { type: String, required: true, unique: true }, 
-});
-
-export default mongoose.model<IMessage & Document>('Message', MessageSchema);
