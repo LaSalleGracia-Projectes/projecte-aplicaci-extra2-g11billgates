@@ -47,7 +47,7 @@ export default function Login () {
         });
 
         if (rememberMe) {
-          Cookies.set("email", email, { expires: 7 }); // expira en 7 días
+          Cookies.set("email", email, { expires: 7 }); 
           Cookies.set("password", password, { expires: 7 });
         } else {
           Cookies.remove("email");
