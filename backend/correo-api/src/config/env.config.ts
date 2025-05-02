@@ -1,8 +1,7 @@
 import dotenv from 'dotenv';
-
 dotenv.config();
 
-const requiredEnvVars = ['EMAIL_USER', 'EMAIL_PASS', 'MONGO_URI'] as const;
+const requiredEnvVars = ['EMAIL_USER', 'EMAIL_PASS'] as const;
 
 for (const envVar of requiredEnvVars) {
   if (!process.env[envVar]) {
@@ -18,8 +17,5 @@ export const config = {
     port: 993,
     tls: true,
   },
-  mongodb: {
-    uri: process.env.MONGO_URI!,
-  },
   port: process.env.PORT || 3001,
-}; 
+};

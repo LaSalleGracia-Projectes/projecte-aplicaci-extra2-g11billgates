@@ -1,5 +1,5 @@
 export interface IMessage {
-  _id?: string;
+  id?: number;
   username: string;
   question: string;
   date: Date;
