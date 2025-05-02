@@ -14,7 +14,7 @@ router.put('/:id', verifyToken, verifyAdmin, userController.updateUser as Reques
 router.delete('/:id', verifyToken,verifyAdmin, userController.deleteUser as RequestHandler);
 
 router.post('/login', authController.loginUser as RequestHandler);
-router.post('/logout', authController.logout as RequestHandler);
+router.post('/logout', verifyToken, verifyAdmin, authController.logout as RequestHandler);
 
 router.post('/users/:userId/warn', verifyAdmin, verifyToken, warnUser as unknown as RequestHandler);
 router.post('/users/:userId/ban', verifyAdmin, verifyToken, banUser as unknown as RequestHandler);
