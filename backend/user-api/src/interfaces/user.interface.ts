@@ -4,8 +4,8 @@ export interface IUser {
     password: string;
     role: 'Administrador' | 'Usuario';
     status: 'Activo' | 'Inactivo';
-    bloqueado?: boolean;
-    advertencias?: number;
+    reported?: boolean;
+    reason?: 'Comportamiento tóxico' | 'Vocabulario inadecuado' | 'Otro';
     warnings?: number;
     banned?: boolean;
   }
