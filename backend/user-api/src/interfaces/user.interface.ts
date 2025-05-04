@@ -6,7 +6,7 @@ export interface IUser {
     status: 'Activo' | 'Inactivo';
     reported?: boolean;
     reason?: 'Comportamiento tóxico' | 'Vocabulario inadecuado' | 'Otro';
-    warnings?: number;
-    banned?: boolean;
+    warnings: number;
+    banned: boolean;
   }
   
