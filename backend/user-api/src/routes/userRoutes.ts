@@ -16,8 +16,8 @@ router.delete('/:id', verifyToken,verifyAdmin, userController.deleteUser as Requ
 router.post('/login', authController.loginUser as RequestHandler);
 router.post('/logout', verifyToken, verifyAdmin, authController.logout as RequestHandler);
 
-router.post('/:userId/warn', userModeration.warnUser as RequestHandler);
-router.post('/:userId/ban', userModeration.banUser as RequestHandler);
+router.post('/:userId/warn', verifyToken, verifyAdmin,userModeration.warnUser as RequestHandler);
+router.post('/:userId/ban', verifyToken, verifyAdmin,userModeration.banUser as RequestHandler);
 router.post('/remove-warning/:userId', verifyToken, verifyAdmin, userModeration.removeWarning as RequestHandler);
 router.post('/unban/:userId', verifyToken, verifyAdmin, userModeration.unbanUser as RequestHandler);
 
