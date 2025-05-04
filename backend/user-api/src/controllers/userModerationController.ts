@@ -46,3 +46,21 @@ export const banUser = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
+export const unbanUser = async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+      const user = await UserModel.findById(userId);
+  
+      if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+  
+      user.banned = false;
+      await user.save();
+  
+      res.json({ message: `Usuario ${user.username} ha sido desbaneado.` });
+    } catch (error) {
+      console.error('Error al desbanear usuario:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
+  
