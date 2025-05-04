@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use('/api/links', linkRoutes);
 
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 3005;
 
 connectDB().then(() => {
   app.listen(PORT, () => {
