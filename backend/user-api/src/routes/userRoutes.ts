@@ -19,5 +19,5 @@ router.post('/logout', verifyToken, verifyAdmin, authController.logout as Reques
 router.post('/:userId/warn',  warnUser as unknown as RequestHandler);
 router.post('/:userId/ban',  banUser as unknown as RequestHandler);
 
-router.get('/stats',  getUserStats);
+router.get('/stats', verifyToken, verifyAdmin, getUserStats);
 export default router;

@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import { AuthRequest } from '../interfaces/auth.interface';
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction): void => {
+  console.log('✅ Token verificado:', req.user);
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
