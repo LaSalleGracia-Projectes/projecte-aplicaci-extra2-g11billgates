@@ -1,105 +1,160 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/app/components/Header";
-import Cookies from "js-cookie";
 import Swal from "sweetalert2";
+import Cookies from "js-cookie";
 
-export default function DownloadLinks() {
+export default function EnlacesPage() {
   const [links, setLinks] = useState([]);
-  const [newLink, setNewLink] = useState({
+  const [selectedId, setSelectedId] = useState(null);
+  const [form, setForm] = useState({
+    type: "Descarga",
     url: "",
     description: "",
-    type: "descarga",
   });
 
-  const fetchLinks = async () => {
-    const token = Cookies.get("sessionToken");
-    try {
-      const res = await fetch("http://localhost:3005/api/links", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  const token = Cookies.get("sessionToken");
+
+  const fetchLinks = () => {
+    fetch("http://localhost:3005/api/links", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setLinks(data))
+      .catch((err) => {
+        console.error("Error al cargar enlaces:", err);
+        Swal.fire("Error", "No se pudieron cargar los enlaces", "error");
       });
-      const data = await res.json();
-      setLinks(data);
-    } catch (error) {
-      console.error("Error al cargar enlaces:", error);
-    }
   };
 
   useEffect(() => {
     fetchLinks();
   }, []);
 
-  const handleAddLink = async () => {
-    const token = Cookies.get("sessionToken");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const method = selectedId ? "PUT" : "POST";
+    const endpoint = selectedId
+      ? `http://localhost:3005/api/links/${selectedId}`
+      : "http://localhost:3005/api/links";
 
     try {
-      const res = await fetch("http://localhost:3005/api/links", {
-        method: "POST",
+      const res = await fetch(endpoint, {
+        method,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newLink),
+        body: JSON.stringify(form),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        setNewLink({ url: "", description: "", type: "descarga" });
+        Swal.fire(
+          selectedId ? "Enlace actualizado" : "Enlace creado",
+          data.message || "",
+          "success"
+        );
+        setForm({ type: "Descarga", url: "", description: "" });
+        setSelectedId(null);
         fetchLinks();
       } else {
-        Swal.fire("Error", "No se pudo agregar el enlace", "error");
+        Swal.fire("Error", data.error || "No se pudo guardar el enlace", "error");
       }
-    } catch (error) {
-      Swal.fire("Error", "Error al conectar con el servidor", "error");
+    } catch (err) {
+      console.error("Error:", err);
+      Swal.fire("Error", "No se pudo guardar el enlace", "error");
     }
+  };
+
+  const handleEdit = (link) => {
+    setForm({
+      type: link.type,
+      url: link.url,
+      description: link.description,
+    });
+    setSelectedId(link._id);
   };
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
       <Header />
-      <main className="p-6 mt-20">
-        <h2 className="text-2xl font-bold mb-6 border-b-2 pb-2">Agregar Nuevo Enlace</h2>
+      <main className="p-6 mt-20 max-w-4xl mx-auto">
+        <h2 className="text-2xl font-bold mb-4 border-b-2 pb-2">
+          Gestión de Enlaces
+        </h2>
 
-        <div className="mb-6">
-          <label className="block text-lg font-semibold mb-2">Tipo de Enlace:</label>
-          <select
-            value={newLink.type}
-            onChange={(e) => setNewLink({ ...newLink, type: e.target.value })}
-            className="w-full p-3 border rounded-lg"
+        <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow mb-10">
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">Tipo de Enlace:</label>
+            <select
+              className="w-full border px-3 py-2 rounded"
+              value={form.type}
+              onChange={(e) => setForm({ ...form, type: e.target.value })}
+            >
+              <option value="Descarga">Descarga</option>
+              <option value="Actualización">Actualización</option>
+            </select>
+          </div>
+
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">URL del Enlace:</label>
+            <input
+              type="text"
+              className="w-full border px-3 py-2 rounded"
+              value={form.url}
+              onChange={(e) => setForm({ ...form, url: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block font-semibold mb-1">Descripción:</label>
+            <textarea
+              className="w-full border px-3 py-2 rounded"
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
           >
-            <option value="descarga">Descarga</option>
-            <option value="actualizacion">Actualización</option>
-          </select>
-        </div>
+            {selectedId ? "Actualizar Enlace" : "Agregar Enlace"}
+          </button>
+        </form>
 
-        <div className="mb-6">
-          <label className="block text-lg font-semibold mb-2">URL del Enlace:</label>
-          <input
-            type="text"
-            value={newLink.url}
-            onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
-            className="w-full p-3 border rounded-lg"
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-lg font-semibold mb-2">Descripción:</label>
-          <textarea
-            value={newLink.description}
-            onChange={(e) => setNewLink({ ...newLink, description: e.target.value })}
-            className="w-full p-3 border rounded-lg"
-            rows="4"
-          />
-        </div>
-
-        <button
-          onClick={handleAddLink}
-          className="bg-black text-white px-6 py-3 text-lg rounded hover:bg-gray-800"
-        >
-          Agregar Enlace
-        </button>
+        {links.length > 0 && (
+          <div className="bg-white rounded shadow p-4">
+            <h3 className="text-lg font-semibold mb-3">Enlaces existentes</h3>
+            <ul className="space-y-2">
+              {links.map((link) => (
+                <li
+                  key={link._id}
+                  className="flex justify-between items-start p-2 border-b"
+                >
+                  <div>
+                    <p><strong>Tipo:</strong> {link.type}</p>
+                    <p><strong>URL:</strong> {link.url}</p>
+                    <p><strong>Descripción:</strong> {link.description}</p>
+                  </div>
+                  <button
+                    onClick={() => handleEdit(link)}
+                    className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
+                  >
+                    Editar
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </main>
     </div>
   );
