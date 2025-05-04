@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import Header from "@/app/components/Header";
 import QuestionRow from "@/app/components/QuestionRow";
+import Cookies from "js-cookie";
 
 export default function UserQuestionsPage() {
   const [questions, setQuestions] = useState([]);
@@ -11,9 +12,15 @@ export default function UserQuestionsPage() {
   const [response, setResponse] = useState("");
   const loadedIdsRef = useRef(new Set());
 
+  const token = Cookies.get("sessionToken");
+
   const fetchEmails = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/emails/all");
+      const res = await fetch("http://localhost:3001/api/emails/all", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await res.json();
 
       const newQuestions = data.filter((q) => !loadedIdsRef.current.has(q._id));
@@ -29,22 +36,19 @@ export default function UserQuestionsPage() {
 
   useEffect(() => {
     fetchEmails();
-
-    const interval = setInterval(() => {
-      fetchEmails();
-    }, 10000);
-
+    const interval = setInterval(fetchEmails, 10000);
     return () => clearInterval(interval);
   }, []);
 
   const handleSendResponse = async () => {
     if (!activeQuestion || !response) return;
-  
+
     try {
       const res = await fetch("http://localhost:3001/api/emails/respond", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           to: activeQuestion.username,
@@ -52,9 +56,9 @@ export default function UserQuestionsPage() {
           text: response,
         }),
       });
-  
+
       const data = await res.json();
-  
+
       if (data.success) {
         Swal.fire(
           "Respuesta Enviada",
@@ -70,7 +74,7 @@ export default function UserQuestionsPage() {
       console.error("Error al enviar correo:", error);
       Swal.fire("Error", "No se pudo enviar la respuesta", "error");
     }
-  };  
+  };
 
   const handleDelete = (questionToDelete) => {
     Swal.fire({
@@ -86,6 +90,9 @@ export default function UserQuestionsPage() {
       if (result.isConfirmed) {
         fetch(`http://localhost:3001/api/emails/${questionToDelete._id}`, {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
           .then((res) => {
             if (!res.ok) throw new Error("No se pudo eliminar");
@@ -137,13 +144,15 @@ export default function UserQuestionsPage() {
       }
     });
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
       <Header />
       <main className="p-6 mt-20 w-full">
         <div className="max-w-full">
-          <h2 className="text-2xl font-bold mb-4 border-b-2 pb-2">Preguntas de Usuarios</h2>
+          <h2 className="text-2xl font-bold mb-4 border-b-2 pb-2">
+            Preguntas de Usuarios
+          </h2>
           <p className="mb-4 text-sm text-gray-600">
             Revisa y responde las preguntas enviadas por los usuarios.
           </p>
