@@ -3,7 +3,7 @@ import * as userController from '../controllers/userController';
 import * as authController from '../controllers/authController';
 import  { verifyToken }  from '../middleware/verifyToken';
 import { verifyAdmin } from '../middleware/verifyAdmin';
-import { warnUser, banUser } from '../controllers/userModerationController';
+import  * as userModeration from '../controllers/userModerationController';
 import { getUserStats } from '../controllers/stats.controller';
 
 const router = Router();
@@ -14,10 +14,13 @@ router.put('/:id', verifyToken, verifyAdmin, userController.updateUser as Reques
 router.delete('/:id', verifyToken,verifyAdmin, userController.deleteUser as RequestHandler);
 
 router.post('/login', authController.loginUser as RequestHandler);
-router.post('/logout', authController.logout as RequestHandler);
+router.post('/logout', verifyToken, verifyAdmin, authController.logout as RequestHandler);
 
-router.post('/users/:userId/warn', verifyAdmin, verifyToken, warnUser as unknown as RequestHandler);
-router.post('/users/:userId/ban', verifyAdmin, verifyToken, banUser as unknown as RequestHandler);
+router.post('/:userId/warn', verifyToken, verifyAdmin,userModeration.warnUser as RequestHandler);
+router.post('/:userId/ban', verifyToken, verifyAdmin,userModeration.banUser as RequestHandler);
+router.post('/remove-warning/:userId', verifyToken, verifyAdmin, userModeration.removeWarning as RequestHandler);
+router.post('/unban/:userId', verifyToken, verifyAdmin, userModeration.unbanUser as RequestHandler);
 
-router.get('/stats', verifyToken, getUserStats);
+
+router.get('/stats', verifyToken, verifyAdmin, getUserStats);
 export default router;
