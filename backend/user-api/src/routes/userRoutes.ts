@@ -3,7 +3,7 @@ import * as userController from '../controllers/userController';
 import * as authController from '../controllers/authController';
 import  { verifyToken }  from '../middleware/verifyToken';
 import { verifyAdmin } from '../middleware/verifyAdmin';
-import { warnUser, banUser } from '../controllers/userModerationController';
+import  * as userModeration from '../controllers/userModerationController';
 import { getUserStats } from '../controllers/stats.controller';
 
 const router = Router();
@@ -16,8 +16,11 @@ router.delete('/:id', verifyToken,verifyAdmin, userController.deleteUser as Requ
 router.post('/login', authController.loginUser as RequestHandler);
 router.post('/logout', verifyToken, verifyAdmin, authController.logout as RequestHandler);
 
-router.post('/:userId/warn',  warnUser as unknown as RequestHandler);
-router.post('/:userId/ban',  banUser as unknown as RequestHandler);
+router.post('/:userId/warn', userModeration.warnUser as RequestHandler);
+router.post('/:userId/ban', userModeration.banUser as RequestHandler);
+router.post('/remove-warning/:userId', verifyToken, verifyAdmin, userModeration.removeWarning as RequestHandler);
+router.post('/unban/:userId', verifyToken, verifyAdmin, userModeration.unbanUser as RequestHandler);
+
 
 router.get('/stats', verifyToken, verifyAdmin, getUserStats);
 export default router;
