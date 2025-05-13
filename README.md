@@ -9,7 +9,6 @@ Este proyecto está dividido en:
   - API de correos (`correo-api`)
   - API de descargas (`download-api`)
 - **Frontend Administrativo** (Next.js)
-- **Frontend Publicitario** (HTML, CSS y JavaScript puro)
 
 ---
 
