@@ -88,7 +88,7 @@ export default function UserQuestionsPage() {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:3001/api/emails/${questionToDelete._id}`, {
+        fetch(`http://localhost:3001/api/emails/${questionToDelete.id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,9 +97,9 @@ export default function UserQuestionsPage() {
           .then((res) => {
             if (!res.ok) throw new Error("No se pudo eliminar");
             setQuestions((prev) =>
-              prev.filter((q) => q._id !== questionToDelete._id)
+              prev.filter((q) => q.id !== questionToDelete.id)
             );
-            loadedIdsRef.current.delete(questionToDelete._id);
+            loadedIdsRef.current.delete(questionToDelete.id);
             Swal.fire("¡Eliminado!", "La pregunta fue eliminada.", "success");
           })
           .catch(() => {
