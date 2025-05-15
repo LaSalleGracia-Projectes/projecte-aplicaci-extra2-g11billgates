@@ -7,10 +7,12 @@ import Swal from "sweetalert2";
 
 export default function UserReportsPage() {
   const [reportedUsers, setReportedUsers] = useState([]);
+  const [usersWithWarnings, setUsersWithWarnings] = useState([]);
+  const [activeTab, setActiveTab] = useState('reported'); // 'reported' o 'warnings'
 
   const token = Cookies.get("sessionToken");
 
-  const fetchReportedUsers = () => {
+  const fetchUsers = () => {
     if (!token) return;
 
     fetch("http://localhost:3003/api/users", {
@@ -20,16 +22,18 @@ export default function UserReportsPage() {
     })
       .then((res) => res.json())
       .then((data) => {
-        const filtered = data.filter((user) => user.reported === true);
-        setReportedUsers(filtered);
+        const reported = data.filter((user) => user.reported === true);
+        const warned = data.filter((user) => user.warnings > 0);
+        setReportedUsers(reported);
+        setUsersWithWarnings(warned);
       })
       .catch((err) =>
-        console.error("Error al cargar usuarios reportados:", err)
+        console.error("Error al cargar usuarios:", err)
       );
   };
 
   useEffect(() => {
-    fetchReportedUsers();
+    fetchUsers();
   }, []);
 
   const handleWarn = async (userId) => {
@@ -46,7 +50,7 @@ export default function UserReportsPage() {
 
       if (res.ok) {
         Swal.fire("Advertencia aplicada", data.message, "success");
-        fetchReportedUsers();
+        fetchUsers();
       } else {
         Swal.fire("Error", data.error || "No se pudo aplicar advertencia", "error");
       }
@@ -70,7 +74,7 @@ export default function UserReportsPage() {
 
       if (res.ok) {
         Swal.fire("Advertencia eliminada", data.message, "success");
-        fetchReportedUsers();
+        fetchUsers();
       } else {
         Swal.fire("Error", data.error || "No se pudo eliminar la advertencia", "error");
       }
@@ -108,7 +112,7 @@ export default function UserReportsPage() {
           data.message,
           "success"
         );
-        fetchReportedUsers();
+        fetchUsers();
       } else {
         console.error("❌ Error en respuesta:", res.status, data);
         Swal.fire("Error", data.error || "Acción fallida", "error");
@@ -127,26 +131,49 @@ export default function UserReportsPage() {
           Gestión de Contenido para TeamUp
         </h2>
         <p className="mb-6 text-gray-600">
-          Aquí puedes ver los jugadores que han sido reportados por otros por mal comportamiento durante las partidas o en el chat. Toma medidas si es necesario.
+          Aquí puedes gestionar los usuarios reportados y aquellos con advertencias. Toma medidas si es necesario.
         </p>
+
+        <div className="mb-6 flex gap-4">
+          <button
+            onClick={() => setActiveTab('reported')}
+            className={`px-4 py-2 rounded-lg font-medium ${
+              activeTab === 'reported'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Usuarios Reportados
+          </button>
+          <button
+            onClick={() => setActiveTab('warnings')}
+            className={`px-4 py-2 rounded-lg font-medium ${
+              activeTab === 'warnings'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            Usuarios con Advertencias
+          </button>
+        </div>
 
         <table className="w-full border border-gray-300 text-left table-auto bg-white rounded shadow text-sm">
           <thead className="bg-gray-200 text-gray-700">
             <tr>
               <th className="p-2">ID</th>
               <th className="p-2">Usuario</th>
-              <th className="p-2">Motivo</th>
+              <th className="p-2">{activeTab === 'reported' ? 'Motivo' : 'Última Advertencia'}</th>
               <th className="p-2 text-center">Advertencias</th>
               <th className="p-2 text-center">Baneado</th>
               <th className="p-2 text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {reportedUsers.map((user) => (
+            {(activeTab === 'reported' ? reportedUsers : usersWithWarnings).map((user) => (
               <tr key={user._id} className="border-t hover:bg-gray-50">
                 <td className="p-2 break-all">{user._id}</td>
                 <td className="p-2">{user.username}</td>
-                <td className="p-2">{user.reason || "Sin motivo"}</td>
+                <td className="p-2">{activeTab === 'reported' ? (user.reason || "Sin motivo") : (user.lastWarning || "Sin detalles")}</td>
                 <td className="p-2 text-center font-semibold">{user.warnings ?? 0}</td>
                 <td className="p-2 text-center">{user.banned ? "Sí" : "No"}</td>
                 <td className="p-2 flex flex-wrap justify-center gap-2">

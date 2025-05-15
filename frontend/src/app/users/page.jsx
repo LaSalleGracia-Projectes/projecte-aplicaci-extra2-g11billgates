@@ -97,6 +97,63 @@ export default function UserManagementPage() {
     });
   };
 
+  const handleWarn = async (user) => {
+    const { value: warningReason } = await Swal.fire({
+      title: `Enviar advertencia a ${user.username}`,
+      input: 'textarea',
+      inputLabel: 'Motivo de la advertencia',
+      inputPlaceholder: 'Escribe el motivo de la advertencia...',
+      inputAttributes: {
+        'aria-label': 'Motivo de la advertencia'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Enviar advertencia',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'Debes escribir un motivo para la advertencia';
+        }
+      }
+    });
+
+    if (warningReason) {
+      try {
+        const token = Cookies.get("sessionToken");
+        const response = await fetch(`http://localhost:3003/api/users/${user._id}/warn`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ reason: warningReason }),
+        });
+
+        if (response.ok) {
+          const updatedUser = await response.json();
+          setUsers(prev => prev.map(u => u._id === user._id ? updatedUser : u));
+          await Swal.fire({
+            title: 'Advertencia enviada',
+            text: `Se ha enviado una advertencia a ${user.username}`,
+            icon: 'success',
+            timer: 2000,
+            timerProgressBar: true
+          });
+        } else {
+          throw new Error('Error al enviar la advertencia');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        await Swal.fire({
+          title: 'Error',
+          text: 'No se pudo enviar la advertencia',
+          icon: 'error'
+        });
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900">
       <Header />
@@ -113,7 +170,7 @@ export default function UserManagementPage() {
               <th className="p-2">Estado</th>
               <th className="p-2">Advertencias</th>
               <th className="p-2">¿Baneado?</th>
-              <th className="p-2 w-40">Acciones</th>
+              <th className="p-2 w-48">Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -181,6 +238,12 @@ export default function UserManagementPage() {
                         className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
                       >
                         Editar
+                      </button>
+                      <button
+                        onClick={() => handleWarn(user)}
+                        className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
+                      >
+                        Advertir
                       </button>
                       <button
                         onClick={() => handleDelete(user._id, user.username)}

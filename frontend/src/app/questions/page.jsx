@@ -60,19 +60,32 @@ export default function UserQuestionsPage() {
       const data = await res.json();
 
       if (data.success) {
-        Swal.fire(
-          "Respuesta Enviada",
-          `Tu respuesta a ${activeQuestion.username} ha sido enviada.`,
-          "success"
-        );
         setActiveQuestion(null);
         setResponse("");
+        await Swal.fire({
+          title: "Respuesta Enviada",
+          text: `Tu respuesta a ${activeQuestion.username} ha sido enviada.`,
+          icon: "success",
+          confirmButtonColor: "#16a34a",
+          timer: 2000,
+          timerProgressBar: true
+        });
       } else {
-        Swal.fire("Error", "No se pudo enviar el correo", "error");
+        await Swal.fire({
+          title: "Error",
+          text: "No se pudo enviar el correo",
+          icon: "error",
+          confirmButtonColor: "#d33"
+        });
       }
     } catch (error) {
       console.error("Error al enviar correo:", error);
-      Swal.fire("Error", "No se pudo enviar la respuesta", "error");
+      await Swal.fire({
+        title: "Error",
+        text: "No se pudo enviar la respuesta",
+        icon: "error",
+        confirmButtonColor: "#d33"
+      });
     }
   };
 
@@ -109,9 +122,9 @@ export default function UserQuestionsPage() {
     });
   };
 
-  const showResponseModal = (question) => {
+  const showResponseModal = async (question) => {
     setActiveQuestion(question);
-    Swal.fire({
+    const { value: responseText } = await Swal.fire({
       title: 'Responder Pregunta',
       html: `
         <div class="text-left">
@@ -126,23 +139,24 @@ export default function UserQuestionsPage() {
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#16a34a',
       cancelButtonColor: '#6b7280',
+      focusConfirm: false,
       preConfirm: () => {
         const responseText = document.getElementById('response-text').value;
         if (!responseText) {
           Swal.showValidationMessage('Por favor, escribe una respuesta');
           return false;
         }
-        setResponse(responseText);
         return responseText;
       }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleSendResponse();
-      } else {
-        setActiveQuestion(null);
-        setResponse("");
-      }
     });
+
+    if (responseText) {
+      setResponse(responseText);
+      await handleSendResponse();
+    } else {
+      setActiveQuestion(null);
+      setResponse("");
+    }
   };
 
   return (
